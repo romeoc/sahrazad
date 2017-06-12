@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Listing Page</title>
+        <meta charset="UTF-8" />
+        
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo self::getAsset('img', 'icon.png'); ?>" />
+        <link rel="stylesheet" type="text/css" href="<?php echo self::getAsset('css', 'bootstrap.min.css'); ?>" />
+        <link rel="stylesheet" type="text/css" href="<?php echo self::getAsset('css', 'styles.css'); ?>" />
+        
+        <script type="text/javascript" src="<?php echo self::getAsset('js', 'jquery.min.js'); ?>"></script>
+        <script type="text/javascript" src="<?php echo self::getAsset('js', 'bootstrap.min.js'); ?>"></script>
+        <script type="text/javascript" src="<?php echo self::getAsset('js', 'sahrazad.js'); ?>"></script>
+    </head>
+    <body>
+        <header>
+            <img src="<?php echo self::getAsset('img', 'logo.png'); ?>" alt="Sahrazad" height="60" class="logo" />
+        </header>
+        <div class="container">
+            <div class="box-content listing">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th width="50%">Title</th>
+                            <th>Sold</th>
+                            <th>Advertised</th>
+                            <th>Created At</th>
+                            <th>Staus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($data as $product): ?>
+                            <tr data-action="<?php echo self::getBaseUrl() . "public/view.php?product={$product['id']}"; ?>">
+                                <td><?php echo $product['id']; ?></td>
+                                <td><?php echo $product['title']; ?></td>
+                                <td>$<?php echo $product['seller_price']; ?></td>
+                                <td>$<?php echo ($product['advertised_price']) ?: 0; ?></td>
+                                <td><?php echo $product['created_at']; ?></td>
+                                <td class="align-middle text-center status-<?php echo (int)(bool)$product['advertised_price']; ?> imported-<?php echo $product['imported']; ?>">
+                                    <?php if (empty($product['advertised_price'])): ?>
+                                        New
+                                    <?php elseif (!$product['imported']): ?>
+                                        Ready
+                                    <?php else: ?>
+                                        Live
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
+

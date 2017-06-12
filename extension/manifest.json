@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+
+    "name": "Sahrazad",
+    "description": "Import Products from AliExpress to Woocommerce",
+    "version": "0.1",
+
+    "content_scripts": [
+        {
+            "matches": ["https://www.aliexpress.com/*"],
+            "js": [
+                "assets/js/jquery.min.js",
+                "assets/js/init.js"
+            ],
+            "css": [
+                "assets/css/styles.css"
+            ]
+        }
+    ]
+}

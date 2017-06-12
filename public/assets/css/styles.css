@@ -1,0 +1,10 @@
+header { text-align: center; padding: 20px 0; background-color: #ebd1ff; }
+.container { margin-top: 20px; }
+.align-middle { vertical-align: middle !important; }
+label { margin-left: 5px; }
+
+.listing tr { cursor: pointer; }
+.listing .imported-1 { background-color: #94D092; }
+.listing .status-0 { background-color: #FAD4D3; }
+.listing .status-1.imported-0 { background-color: #FFFDAF; }
+.listing tr.hover { background-color: #ebd1ff; }

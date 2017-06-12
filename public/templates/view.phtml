@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Listing Page</title>
+        <meta charset="UTF-8" />
+        
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo self::getAsset('img', 'icon.png'); ?>" />
+        <link rel="stylesheet" type="text/css" href="<?php echo self::getAsset('css', 'bootstrap.min.css'); ?>" />
+        <link rel="stylesheet" type="text/css" href="<?php echo self::getAsset('css', 'styles.css'); ?>" />
+        
+        <script type="text/javascript" src="<?php echo self::getAsset('js', 'jquery.min.js'); ?>"></script>
+        <script type="text/javascript" src="<?php echo self::getAsset('js', 'bootstrap.min.js'); ?>"></script>
+        <script type="text/javascript" src="<?php echo self::getAsset('js', 'sahrazad.js'); ?>"></script>
+    </head>
+    <body>
+        <header>
+            <img src="<?php echo self::getAsset('img', 'logo.png'); ?>" alt="Sahrazad" height="60" class="logo" />
+        </header>
+        <?php $original = $data['original']; //var_dump($original); die;?>
+        <div class="container">
+            <div class="box-content view">
+                <form method="POST" action="<?php echo self::getBaseUrl() . 'public/save.php'; ?>">
+                    <div class="row">
+                        <div class="original-side col-md-6">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label for="orig-product-id">Product ID</label>
+                                    <input type="email" class="form-control" id="orig-product-id" value="<?php echo $original->product_id; ?>" readonly />
+                                </div>
+                                <div class="form-group col-md-4 has-success">
+                                    <label for="orig-score">Score</label>
+                                    <input type="text" class="form-control form-control-success" id="orig-score" value="<?php echo $original->woodropship_score; ?>" readonly />
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="orig-quantity">Available Quantity</label>
+                                    <input type="text" class="form-control" id="orig-quantity" value="<?php echo $original->available_quantity; ?>" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modified-side col-md-6">
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+

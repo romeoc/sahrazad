@@ -1,0 +1,13 @@
+<?php
+
+return array(
+    'base_url' => 'https://sahrazad.local/',
+    'database' => array(
+        'host' => '127.0.0.1',
+        'dbname' => '',
+        'user' => '',
+        'pass' => '',
+        'port' => 3306,
+    )
+);
+
