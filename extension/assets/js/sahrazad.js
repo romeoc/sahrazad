@@ -7,12 +7,14 @@
             Sahrazad.data['special_price_high'] = window.runParams.actMaxPrice;
             Sahrazad.data['price_low'] = window.runParams.minPrice;
             Sahrazad.data['price_high'] = window.runParams.maxPrice;
-            Sahrazad.data['gallery_images'] = window.runParams.imageBigViewURL;
             Sahrazad.data['available_quantity'] = window.runParams.totalAvailQuantity;
             Sahrazad.data['product_id'] = window.runParams.productId;
             Sahrazad.data['title'] = $('.product-name').html();
             Sahrazad.data['woodropship_score'] = $('.card-title').html();
-            Sahrazad.data['ships_epacket'] = $('#j-shipping-dialog td').find('input[data-full-name="ePacket"]').size();
+            Sahrazad.data['ships_epacket'] = ($('#j-shipping-company').html() === 'ePacket');
+            
+            var variationImages = $('.item-sku-image img').map(function() { return this.src.replace('_50x50.jpg', ''); }).get();
+            Sahrazad.data['gallery_images'] = window.runParams.imageBigViewURL.concat(variationImages);
 
             // Description Images
             Sahrazad.data['description_images'] = $(".description-content img").map(function() {
@@ -23,7 +25,7 @@
             if (Object.keys(window.skuProducts).length > 1) {
                 Sahrazad.data['variations'] = [];
                 for (var product in window.skuProducts) {
-                    var variation = [];
+                    var variation = {};
                     variation['sku'] = window.skuProducts[product].skuPropIds;
                     variation['price'] = window.skuProducts[product].skuVal.skuCalPrice;
                     variation['special_price'] = window.skuProducts[product].skuVal.actSkuCalPrice;

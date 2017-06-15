@@ -4,6 +4,17 @@ namespace tools;
 
 class Format
 {
+    protected static $conditions = array(
+        'woodropship_score' => array(
+            'warning' => 8,
+            'danger' => 6
+        ),
+        'available_quantity' => array(
+            'warning' => 100,
+            'danger' => 30
+        )
+    );
+    
     public static function getFinalPrice($data)
     {
         if (empty($data)) {
@@ -56,6 +67,26 @@ class Format
             return $old->$key;
         } else {
             return null;
+        }
+    }
+    
+    /**
+     * Get status class for each attribute based on conditions
+     * 
+     * @param string $key
+     * @param mixed $value
+     * @param bool $head
+     * @return string
+     */
+    public static function getStatusClass($key, $value, $head = true)
+    {
+        $class = ($head) ? 'has-' : 'form-control-';
+        if (self::$conditions[$key]['danger'] > $value) {
+            return $class . 'danger';
+        } elseif(self::$conditions[$key]['warning'] > $value) {
+            return $class . 'warning';
+        } else {
+            return $class . 'success';
         }
     }
 }

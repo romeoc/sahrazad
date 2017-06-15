@@ -1,3 +1,4 @@
+<?php use tools\Format; ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -5,43 +6,288 @@
         <meta charset="UTF-8" />
         
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo self::getAsset('img', 'icon.png'); ?>" />
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo self::getAsset('css', 'bootstrap.min.css'); ?>" />
         <link rel="stylesheet" type="text/css" href="<?php echo self::getAsset('css', 'styles.css'); ?>" />
         
         <script type="text/javascript" src="<?php echo self::getAsset('js', 'jquery.min.js'); ?>"></script>
+        <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
         <script type="text/javascript" src="<?php echo self::getAsset('js', 'bootstrap.min.js'); ?>"></script>
         <script type="text/javascript" src="<?php echo self::getAsset('js', 'sahrazad.js'); ?>"></script>
     </head>
     <body>
         <header>
-            <img src="<?php echo self::getAsset('img', 'logo.png'); ?>" alt="Sahrazad" height="60" class="logo" />
+            <a href="<?php echo self::getBaseUrl() . 'public/list.php'; ?>" title="Sahrazad">
+                <img src="<?php echo self::getAsset('img', 'logo.png'); ?>" alt="Sahrazad" height="60" class="logo" />
+            </a>
         </header>
         <?php $original = $data['original']; //var_dump($original); die;?>
+        <?php $modified = ($data['modified']) ?: $original; ?>
         <div class="container">
             <div class="box-content view">
-                <form method="POST" action="<?php echo self::getBaseUrl() . 'public/save.php'; ?>">
+                <form class="product-view-form" method="POST" action="<?php echo self::getBaseUrl() . 'public/save.php'; ?>">
                     <div class="row">
-                        <div class="original-side col-md-6">
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <label for="orig-product-id">Product ID</label>
-                                    <input type="email" class="form-control" id="orig-product-id" value="<?php echo $original->product_id; ?>" readonly />
+                        <div class="form-group col-md-12">
+                            <a class="float-right ml-2" href="https://www.aliexpress.com/wholesale?SearchText=<?php echo $original->product_id; ?>" title="See on AliExpress" target="_blank">
+                                <button type="button" class="btn btn-outline-primary">View on AliExpress</button>
+                            </a>
+                            <a class="float-right ml-2" href="#" title="Save">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </a>
+                            <a class="float-right ml-2" href="#" title="Send">
+                                <button type="button" class="btn btn-warning">Send</button>
+                            </a>
+                            <a class="float-right ml-2 reset-product" data-href="<?php echo self::getBaseUrl() . "public/reset.php?product={$original->product_id}"; ?>" title="Reset">
+                                <button type="button" class="btn btn-danger">Reset</button>
+                            </a>
+                            <a class="float-right ml-2 delete-product" data-href="<?php echo self::getBaseUrl() . "public/delete.php?product={$original->product_id}"; ?>" title="Delete">
+                                <button type="button" class="btn btn-danger">Delete</button>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#tab-general-information" role="tab">General Information</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#tab-attributes" role="tab">Attributes</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#tab-variations" role="tab">Variations</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#tab-images" role="tab">Images</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content">
+                            <div class="card-block tab-pane active" id="tab-general-information">
+                                <div class="row mb-3">
+                                    <div class="form-group col-md-3">
+                                        <label for="orig-product-id">Product ID</label>
+                                        <input type="email" class="form-control" id="orig-product-id" value="<?php echo $original->product_id; ?>" readonly />
+                                    </div>
+                                    <div class="form-group col-md-3 <?php echo Format::getStatusClass('woodropship_score', Format::get('woodropship_score', $original)); ?>">
+                                        <label for="orig-score">Score</label>
+                                        <input type="text" class="form-control <?php echo Format::getStatusClass('woodropship_score', Format::get('woodropship_score', $original), false); ?>" id="orig-score" value="<?php echo (float) Format::get('woodropship_score', $original); ?>" readonly />
+                                    </div>
+                                    <div class="form-group col-md-3 <?php echo Format::getStatusClass('available_quantity', $original->available_quantity); ?>">
+                                        <label for="orig-quantity">Available Quantity</label>
+                                        <input type="text" class="form-control <?php echo Format::getStatusClass('available_quantity', $original->available_quantity, false); ?>" id="orig-quantity" value="<?php echo $original->available_quantity; ?>" readonly />
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="custom-control custom-checkbox ml-5 mt-4">
+                                            <input type="checkbox" class="custom-control-input" <?php if ($original->ships_epacket) { echo 'checked'; } ?>>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">ePacket</span>
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-4 has-success">
-                                    <label for="orig-score">Score</label>
-                                    <input type="text" class="form-control form-control-success" id="orig-score" value="<?php echo $original->woodropship_score; ?>" readonly />
+                                <div class="row">
+                                    <div class="original-side col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-md-12">
+                                                <label for="orig-title">Title</label>
+                                                <textarea class="form-control" id="orig-title" readonly rows="3"><?php echo $original->title; ?></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label for="orig-low-price"><?php echo ($original->price_low == $original->price_high) ? 'Price' : 'Low Price'; ?></label>
+                                                <input type="text" class="form-control" id="orig-low-price" value="$<?php echo number_format($original->price_low, 2); ?>" readonly />
+                                            </div>
+                                            <div class="form-group col-md-6 <?php if ($original->price_low == $original->price_high) { echo 'invisible'; } ?>">
+                                                <label class="orig-high-price">High Price</label>
+                                                <input type="text" class="form-control" id="orig-high-price" value="$<?php echo number_format($original->price_high, 2); ?>" readonly />
+                                            </div>
+                                        </div>
+                                        <?php if (Format::has('special_price_low', $original)): ?>
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="orig-special-low-price"><?php echo (Format::get('special_price_low', $original) == Format::get('special_price_high', $original)) ? 'Special Price' : 'Low Special Price'; ?></label>
+                                                    <input type="text" class="form-control" id="orig-special-low-price" value="$<?php echo number_format(Format::get('special_price_low', $original), 2); ?>" readonly />
+                                                </div>
+                                                <div class="form-group col-md-6 <?php if (Format::get('special_price_low', $original) == Format::get('special_price_high', $original)) { echo 'invisible'; } ?>">
+                                                    <label class="orig-special-high-price">High Price</label>
+                                                    <input type="text" class="form-control" id="orig-special-high-price" value="$<?php echo number_format(Format::get('special_price_high', $original), 2); ?>" readonly />
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="modified-side col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-md-12">
+                                                <label for="modif-title">Title</label>
+                                                <textarea name="title" class="form-control" id="modif-title" rows="3"><?php echo Format::getLatest('title', $original, $modified); ?></textarea>
+                                            </div>
+                                        </div>
+                                        <?php if ($original->price_low == $original->price_high): ?>
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="modif-price">Price</label>
+                                                    <input name="price" type="text" class="form-control" id="modif-price" value="$<?php echo number_format(Format::getLatest('price_low', $original, $modified), 2); ?>" />
+                                                </div>
+                                            </div>
+                                            <?php if (Format::has('special_price_low', $original)): ?>
+                                                <div class="row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="modif-special-price">Special Price</label>
+                                                        <input name="special_price" type="text" class="form-control" id="modif-special-price" value="$<?php echo number_format(Format::getLatest('special_price_low', $original, $modified), 2); ?>" />
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                        <div class="row">
+                                            <div class="form-group col-md-12">
+                                                <label class="modified-description" for="modif-description">
+                                                    Description
+                                                    <button type="button" class="btn btn-primary float-right add-images-to-description">Add Images</button>
+                                                </label>
+                                                <textarea name="description" class="form-control" id="modif-description" rows="8"><?php echo Format::get('description', $modified); ?></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-4">
-                                    <label for="orig-quantity">Available Quantity</label>
-                                    <input type="text" class="form-control" id="orig-quantity" value="<?php echo $original->available_quantity; ?>" readonly />
+                            </div>
+                            <div class="card-block tab-pane" id="tab-attributes">
+                                <?php $attributes = Format::getLatest('attributes', $original, $modified); ?>
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <a class="float-right ml-2 add-attribute" href="javascript:void(0);" title="Send">
+                                            <button type="button" class="btn btn-primary">Add Attribute</button>
+                                        </a>
+                                    </div>
+                                </div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Values</th>
+                                            <th>Action</th>
+                                            <th>Used in Variations</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($attributes as $attribute): ?>
+                                            <tr>
+                                                <td width="40%">
+                                                    <input name="attributes[title][]" type="text" value="<?php echo $attribute->title; ?>" />
+                                                </td>
+                                                <td width="20%">
+                                                    <input name="attributes[value][]" type="text" value="<?php echo $attribute->value; ?>" />
+                                                </td>
+                                                <td width="20%">
+                                                    <button type="button" class="btn btn-danger remove-attribute">
+                                                        <i class="fa fa-close"></i>
+                                                    </button>
+                                                </td>
+                                                <td width="20%">
+                                                    <label class="custom-control custom-checkbox ml-5 mt-4">
+                                                        <input name="attributes[is_variation][]" class="scapegoat-checkbox" type="hidden" value="off" />
+                                                        <input name="attributes[is_variation][]" type="checkbox" class="attributes-checkbox custom-control-input" <?php if (Format::get('is_variation', $attribute)) { echo 'checked'; } ?>>
+                                                        <span class="custom-control-indicator"></span>
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-block tab-pane" id="tab-variations">
+                                <?php $variations = Format::getLatest('variations', $original, $modified); ?>
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <a class="float-right ml-2 add-variation" href="javascript:void(0);" title="Send">
+                                            <button type="button" class="btn btn-primary">Add Variation</button>
+                                        </a>
+                                    </div>
+                                </div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Bought At</th>
+                                            <th>Sold At</th>
+                                            <th>Image</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php if (!empty($variations)): ?>
+                                            <?php foreach ($variations as $variation): ?>
+                                                <tr>
+                                                    <td width="33%">
+                                                        <input name="variations[name][]" type="text" value="<?php echo $variation->name; ?>" />
+                                                    </td>
+                                                    <td width="20%">
+                                                        $<input name="variations[price][]" type="text" value="<?php echo $variation->price; ?>" />
+                                                    </td>
+                                                    <td width="20%">
+                                                        $<input name="variations[advertised][]" type="text" value="<?php echo (float)Format::get('advertised', $variation) ?>" />
+                                                    </td>
+                                                    <td width="15%">
+                                                        <img src="<?php echo $variation->image; ?>" width="50" />
+                                                        <input name="variations[image][]" type="hidden" value="<?php echo $variation->image; ?>" />
+                                                    </td>
+                                                    <td width="15%">
+                                                        <button type="button" class="btn btn-primary change-variation-image" title="Change Image">
+                                                            <i class="fa fa-refresh"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger remove-attribute" title="Remove Variation">
+                                                            <i class="fa fa-close"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-block tab-pane" id="tab-images">
+                                <div class="row">
+                                    <?php $mainImages = Format::getLatest('gallery_images', $original, $modified); ?>
+                                    <?php foreach ($mainImages as $image): ?>
+                                        <div class="image-container">
+                                            <img src="<?php echo $image; ?>" />
+                                            <input name="images[galery][]" type="hidden" value="<?php echo $image; ?>" />
+                                            <button type="button" class="btn btn-primary remove-image">
+                                                <i class="fa fa-close"></i>
+                                            </button>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <?php $descriptionImages = Format::getLatest('description_images', $original, $modified); ?>
+                                    <?php foreach ($descriptionImages as $image): ?>
+                                        <div class="image-container">
+                                            <img src="<?php echo $image; ?>" />
+                                            <input name="images[description][]" type="hidden" value="<?php echo $image; ?>" />
+                                            <button type="button" class="btn btn-primary remove-image">
+                                                <i class="fa fa-close"></i>
+                                            </button>
+                                        </div>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
                         </div>
-                        <div class="modified-side col-md-6">
-
-                        </div>
                     </div>
                 </form>
+            </div>
+        </div>
+        <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Image preview</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="" id="imagepreview">
+                    </div>
+                </div>
             </div>
         </div>
     </body>

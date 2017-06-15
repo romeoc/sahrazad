@@ -2,9 +2,25 @@ header { text-align: center; padding: 20px 0; background-color: #ebd1ff; }
 .container { margin-top: 20px; }
 .align-middle { vertical-align: middle !important; }
 label { margin-left: 5px; }
+button { cursor: pointer; }
+.card { margin-bottom: 20px; }
+.modal-dialog { max-width: 1200px; }
 
 .listing tr { cursor: pointer; }
 .listing .imported-1 { background-color: #94D092; }
 .listing .status-0 { background-color: #FAD4D3; }
 .listing .status-1.imported-0 { background-color: #FFFDAF; }
 .listing tr.hover { background-color: #ebd1ff; }
+
+.modified-side { border-left: 1px solid #BBB; }
+.view .table input { border: 0; padding: 0; outline: 0; font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; }
+#tab-images img { height: 150px; }
+.modified-description { display: block; margin-bottom: 25px; }
+#tab-variations input { width: 80%; }
+#tab-images img, #tab-variations img { border: 4px solid white; cursor: pointer; max-width: 100%; }
+#tab-images img.hover, #tab-variations img.hover { border: 4px solid #2aabd2; }
+.view .image-container { display: inline; margin: 5px auto; position: relative; }
+.view .image-container .remove-image { border-radius: 20px; padding: 8px 12px; position: absolute; top: -15px; right: -15px; display: none; z-index: 100; }
+#imagemodal .image-container img { height: 100px; height: 150px; margin: 5px; border: 4px solid white; cursor: pointer; }
+#imagemodal .image-container img:hover { border: 4px solid #2aabd2; }
+.confirm-modal .modal-dialog { max-width: 400px; }

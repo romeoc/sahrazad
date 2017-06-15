@@ -132,6 +132,17 @@ class Database
     }
     
     /**
+     * Reset product data
+     * @param int $productId
+     */
+    public function reset($productId)
+    {
+        $query = "UPDATE products SET processed_data = NULL WHERE id = {$productId}";
+        $this->query($query);
+        return $this;
+    }
+    
+    /**
      * Save product data
      * @param array $data
      */
@@ -151,7 +162,7 @@ class Database
         }
         
         $this->query($query);
-        $errors = $this->getLastError();
+        $errors = $this->getLastError();        
         if ($errors) {
             http_response_code(400);
             die($errors);
