@@ -10,6 +10,7 @@ return array(
         'port' => 3306,
     ),
     'woocommerce' => array(
+        'developer_mode' => false,
         'url' => 'https://',
         'consumer_key' => '',
         'consumer_secret' => ''

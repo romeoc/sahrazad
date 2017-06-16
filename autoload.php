@@ -2,6 +2,7 @@
 
 date_default_timezone_set("UTC");
 define("ROOT_DIR", __DIR__ . '/');
+require_once "vendor/autoload.php";
 
 $targets = array('tools');
 foreach ($targets as $dir) {
