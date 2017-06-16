@@ -88,7 +88,7 @@ $(function() {
         $('.modal-body .image-container').on('click', function() {
             var selectedImageUrl = $(this).find('img').attr('src');
             $('#modif-description').val(function(i, text) {
-                return text + '[image src="' + selectedImageUrl + '"]';
+                return text + '[image=' + selectedImageUrl + ']';
             });
             
             modal.modal('hide');
@@ -107,5 +107,45 @@ $(function() {
     // Before view form is saved
     $('.product-view-form').submit(function(e) {
         $('.attributes-checkbox:checked').siblings('.scapegoat-checkbox').remove();
+        
+        if ($('#orig-title').val() === $('#modif-title').val()) {
+            postError('You made no changes to the <b>product title</b>', e);
+            return false;
+        }
+        
+        if ($('#orig-low-price').val() === $('#modif-price').val()) {
+            postError('You made no changes to the <b>price</b>', e);
+            return false;
+        }
+        
+        if ($('#tab-attributes input:text').filter(function() { return $(this).val() == ""; }).size() > 0) {
+            postError('You have some <b>empty attributes</b>', e);
+            return false;
+        }
+        
+        if ($('#tab-variations .non-empty').filter(function() { return $(this).val() == 0 ; }).size() > 0) {
+            postError('You missed some <b>variation prices</b>', e);
+            return false;
+        }
+        
+        $('#tab-variations img').each(function() {
+            var src = $(this).attr('src');
+            if ($('#tab-images [src="' + src + '"]').size() === 0) {
+                postError('You removed one of your selected <b>variation images</b>', e);
+                return false;
+            }
+        });
+        
+        if ($('#tab-variations tr').size() > 0 && $('#tab-attributes input:checkbox:checked').size() === 0) {
+            postError('You have variations, but <b>no attribute supports variations</b>', e);
+            return false;
+        }
     });
+    
+    postError = function(error, event) {
+        event.preventDefault();
+        $('.modal-body').html(error);
+        $('#myModalLabel').html("Caution!");
+        $('#imagemodal').addClass('confirm-modal').modal('show');
+    };
 });

@@ -67,7 +67,7 @@
                                 <div class="row mb-3">
                                     <div class="form-group col-md-3">
                                         <label for="orig-product-id">Product ID</label>
-                                        <input type="email" class="form-control" id="orig-product-id" value="<?php echo $original->product_id; ?>" readonly />
+                                        <input type="email" name="product_id" class="form-control" id="orig-product-id" value="<?php echo $original->product_id; ?>" readonly />
                                     </div>
                                     <div class="form-group col-md-3 <?php echo Format::getStatusClass('woodropship_score', Format::get('woodropship_score', $original)); ?>">
                                         <label for="orig-score">Score</label>
@@ -127,14 +127,14 @@
                                             <div class="row">
                                                 <div class="form-group col-md-6">
                                                     <label for="modif-price">Price</label>
-                                                    <input name="price" type="text" class="form-control" id="modif-price" value="$<?php echo number_format(Format::getLatest('price_low', $original, $modified), 2); ?>" />
+                                                    <input name="price_low" type="text" class="form-control" id="modif-price" value="$<?php echo number_format(Format::getLatest('price_low', $original, $modified), 2); ?>" />
                                                 </div>
                                             </div>
                                             <?php if (Format::has('special_price_low', $original)): ?>
                                                 <div class="row">
                                                     <div class="form-group col-md-6">
                                                         <label for="modif-special-price">Special Price</label>
-                                                        <input name="special_price" type="text" class="form-control" id="modif-special-price" value="$<?php echo number_format(Format::getLatest('special_price_low', $original, $modified), 2); ?>" />
+                                                        <input name="special_price_low" type="text" class="form-control" id="modif-special-price" value="$<?php echo number_format(Format::getLatest('special_price_low', $original, $modified), 2); ?>" />
                                                     </div>
                                                 </div>
                                             <?php endif; ?>
@@ -166,25 +166,25 @@
                                             <th>Title</th>
                                             <th>Values</th>
                                             <th>Action</th>
-                                            <th>Used in Variations</th>
+                                            <th>Variation?</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($attributes as $attribute): ?>
                                             <tr>
-                                                <td width="40%">
-                                                    <input name="attributes[title][]" type="text" value="<?php echo $attribute->title; ?>" />
-                                                </td>
                                                 <td width="20%">
-                                                    <input name="attributes[value][]" type="text" value="<?php echo $attribute->value; ?>" />
+                                                    <input class="changeable" name="attributes[title][]" type="text" value="<?php echo $attribute->title; ?>" />
                                                 </td>
-                                                <td width="20%">
+                                                <td width="60%">
+                                                    <input class="changeable" name="attributes[value][]" type="text" value="<?php echo $attribute->value; ?>" />
+                                                </td>
+                                                <td width="10%">
                                                     <button type="button" class="btn btn-danger remove-attribute">
                                                         <i class="fa fa-close"></i>
                                                     </button>
                                                 </td>
-                                                <td width="20%">
-                                                    <label class="custom-control custom-checkbox ml-5 mt-4">
+                                                <td width="10%">
+                                                    <label class="custom-control custom-checkbox ml-4 mt-1">
                                                         <input name="attributes[is_variation][]" class="scapegoat-checkbox" type="hidden" value="off" />
                                                         <input name="attributes[is_variation][]" type="checkbox" class="attributes-checkbox custom-control-input" <?php if (Format::get('is_variation', $attribute)) { echo 'checked'; } ?>>
                                                         <span class="custom-control-indicator"></span>
@@ -208,8 +208,10 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Bought At</th>
-                                            <th>Sold At</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Special Price</th>
+                                            <th>Advertised</th>
                                             <th>Image</th>
                                             <th>Actions</th>
                                         </tr>
@@ -218,20 +220,26 @@
                                         <?php if (!empty($variations)): ?>
                                             <?php foreach ($variations as $variation): ?>
                                                 <tr>
-                                                    <td width="33%">
+                                                    <td width="20%" class="align-middle">
                                                         <input name="variations[name][]" type="text" value="<?php echo $variation->name; ?>" />
                                                     </td>
-                                                    <td width="20%">
-                                                        $<input name="variations[price][]" type="text" value="<?php echo $variation->price; ?>" />
+                                                    <td width="10%" class="align-middle">
+                                                        <input name="variations[available_quantity][]" type="text" value="<?php echo $variation->available_quantity; ?>" readonly />
                                                     </td>
-                                                    <td width="20%">
-                                                        $<input name="variations[advertised][]" type="text" value="<?php echo (float)Format::get('advertised', $variation) ?>" />
+                                                    <td width="10%" class="align-middle">
+                                                        $<input name="variations[price][]" type="text" value="<?php echo $variation->price; ?>" readonly />
                                                     </td>
-                                                    <td width="15%">
+                                                    <td width="15%" class="align-middle">
+                                                        $<input name="variations[special_price][]" type="text" value="<?php echo $variation->special_price; ?>" readonly />
+                                                    </td>
+                                                    <td width="15%" class="align-middle">
+                                                        $<input class="non-empty changeable" name="variations[advertised][]" type="text" value="<?php echo (float)Format::get('advertised', $variation) ?>" />
+                                                    </td>
+                                                    <td width="10%" class="align-middle">
                                                         <img src="<?php echo $variation->image; ?>" width="50" />
                                                         <input name="variations[image][]" type="hidden" value="<?php echo $variation->image; ?>" />
                                                     </td>
-                                                    <td width="15%">
+                                                    <td width="15%" class="align-middle">
                                                         <button type="button" class="btn btn-primary change-variation-image" title="Change Image">
                                                             <i class="fa fa-refresh"></i>
                                                         </button>
@@ -251,7 +259,7 @@
                                     <?php foreach ($mainImages as $image): ?>
                                         <div class="image-container">
                                             <img src="<?php echo $image; ?>" />
-                                            <input name="images[galery][]" type="hidden" value="<?php echo $image; ?>" />
+                                            <input name="gallery_images[]" type="hidden" value="<?php echo $image; ?>" />
                                             <button type="button" class="btn btn-primary remove-image">
                                                 <i class="fa fa-close"></i>
                                             </button>
@@ -264,7 +272,7 @@
                                     <?php foreach ($descriptionImages as $image): ?>
                                         <div class="image-container">
                                             <img src="<?php echo $image; ?>" />
-                                            <input name="images[description][]" type="hidden" value="<?php echo $image; ?>" />
+                                            <input name="description_images[]" type="hidden" value="<?php echo $image; ?>" />
                                             <button type="button" class="btn btn-primary remove-image">
                                                 <i class="fa fa-close"></i>
                                             </button>

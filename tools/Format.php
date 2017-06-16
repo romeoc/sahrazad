@@ -21,19 +21,19 @@ class Format
             return null;
         }
         
-        $lowPrice = $data->price_low;
-        $highPrice = $data->price_high;
+        $lowPrice = self::get('price_low', $data);
+        $highPrice = self::get('price_high', $data);
         $lowSpecialPrice = self::get('special_price_low', $data);
         $highSpecialPrice = self::get('special_price_high', $data);
         
         if ($lowSpecialPrice) {
-            if ($lowSpecialPrice == $highSpecialPrice) {
+            if ($lowSpecialPrice == $highSpecialPrice || !$highSpecialPrice) {
                 return $lowSpecialPrice;
             } else {
                 return "{$lowSpecialPrice} - {$highSpecialPrice}";
             }
         } else {
-            if ($lowPrice == $highPrice) {
+            if ($lowPrice == $highPrice || !$highSpecialPrice) {
                 return $lowPrice;
             } else {
                 return "{$lowPrice} - {$highPrice}";

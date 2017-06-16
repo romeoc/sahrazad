@@ -8,6 +8,11 @@ return array(
         'user' => '',
         'pass' => '',
         'port' => 3306,
+    ),
+    'woocommerce' => array(
+        'url' => 'https://',
+        'consumer_key' => '',
+        'consumer_secret' => ''
     )
 );
 

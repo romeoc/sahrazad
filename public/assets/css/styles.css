@@ -13,7 +13,8 @@ button { cursor: pointer; }
 .listing tr.hover { background-color: #ebd1ff; }
 
 .modified-side { border-left: 1px solid #BBB; }
-.view .table input { border: 0; padding: 0; outline: 0; font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; }
+.view .table input { border: 0; padding: 0; outline: 0; font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; width: 100%; }
+.view .table input.changeable { cursor: pointer; }
 #tab-images img { height: 150px; }
 .modified-description { display: block; margin-bottom: 25px; }
 #tab-variations input { width: 80%; }

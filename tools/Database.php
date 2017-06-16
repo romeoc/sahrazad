@@ -143,10 +143,31 @@ class Database
     }
     
     /**
-     * Save product data
+     * Save product (from product manager)
      * @param array $data
      */
     public function save($data)
+    {
+        $data['description'] = str_replace('"', '\"', $data['description']);
+        $productId = $data['product_id'];
+        $dataJson = str_replace("'", "\'", json_encode($data));
+        
+        $query = "UPDATE products SET processed_data = '{$dataJson}' WHERE id = {$productId}";
+        $this->query($query);
+
+        $errors = $this->getLastError();
+        if ($errors) {
+            die($errors);
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * Save product data for the first time (through AliExpress bridge)
+     * @param array $data
+     */
+    public function create($data)
     {
         $productId = $data['product_id'];
         $data['title'] = str_replace('"', '\"', $data['title']);
