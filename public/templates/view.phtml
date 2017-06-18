@@ -7,10 +7,12 @@
         
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo self::getAsset('img', 'icon.png'); ?>" />
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo self::getAsset('css', 'jquery-ui.min.css'); ?>" />
         <link rel="stylesheet" type="text/css" href="<?php echo self::getAsset('css', 'bootstrap.min.css'); ?>" />
         <link rel="stylesheet" type="text/css" href="<?php echo self::getAsset('css', 'styles.css'); ?>" />
         
         <script type="text/javascript" src="<?php echo self::getAsset('js', 'jquery.min.js'); ?>"></script>
+        <script type="text/javascript" src="<?php echo self::getAsset('js', 'jquery-ui.min.js'); ?>"></script>
         <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
         <script type="text/javascript" src="<?php echo self::getAsset('js', 'bootstrap.min.js'); ?>"></script>
         <script type="text/javascript" src="<?php echo self::getAsset('js', 'sahrazad.js'); ?>"></script>
@@ -34,7 +36,7 @@
                             <a class="float-right ml-2" href="#" title="Save">
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </a>
-                            <a class="float-right ml-2" href="#" title="Send">
+                            <a class="float-right ml-2 reset-product" data-href="<?php echo self::getBaseUrl() . "public/send.php?product={$original->product_id}"; ?>" title="Send">
                                 <button type="button" class="btn btn-warning">Send</button>
                             </a>
                             <a class="float-right ml-2 reset-product" data-href="<?php echo self::getBaseUrl() . "public/reset.php?product={$original->product_id}"; ?>" title="Reset">
@@ -52,13 +54,16 @@
                                     <a class="nav-link active" data-toggle="tab" href="#tab-general-information" role="tab">General Information</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#tab-content" role="tab">Content</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#tab-images" role="tab">Images</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#tab-attributes" role="tab">Attributes</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#tab-variations" role="tab">Variations</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#tab-images" role="tab">Images</a>
                                 </li>
                             </ul>
                         </div>
@@ -139,15 +144,37 @@
                                                 </div>
                                             <?php endif; ?>
                                         <?php endif; ?>
-                                        <div class="row">
-                                            <div class="form-group col-md-12">
-                                                <label class="modified-description" for="modif-description">
-                                                    Description
-                                                    <button type="button" class="btn btn-primary float-right add-images-to-description">Add Images</button>
-                                                </label>
-                                                <textarea name="description" class="form-control" id="modif-description" rows="8"><?php echo Format::get('description', $modified); ?></textarea>
-                                            </div>
-                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-block tab-pane" id="tab-content">
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <?php $selectedCategories = Format::get('categories', $modified); ?>
+                                        <?php $selectedCategories = ($selectedCategories) ?: array(); ?>
+                                        <label for="categories">Categories</label>
+                                        <select name="categories[]" multiple class="form-control" id="categories">
+                                            <?php foreach($data['categories'] as $categoryId => $categoryName): ?>
+                                                <option value="<?php echo $categoryId; ?>" <?php if (in_array($categoryId, $selectedCategories)) { echo 'selected'; } ?>>
+                                                    <?php echo $categoryName; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <label class="modified-description" for="modif-description-short">Short Description</label>
+                                        <textarea name="short_description" class="form-control" id="modif-description-short" rows="5"><?php echo Format::get('short_description', $modified); ?></textarea>
+                                    </div>
+                                </div>                                        
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <label class="modified-description" for="modif-description">
+                                            Description
+                                            <button type="button" class="btn btn-primary float-right add-images-to-description">Add Images</button>
+                                        </label>
+                                        <textarea name="description" class="form-control" id="modif-description" rows="8"><?php echo Format::get('description', $modified); ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -165,8 +192,8 @@
                                         <tr>
                                             <th>Title</th>
                                             <th>Values</th>
-                                            <th>Action</th>
                                             <th>Variation?</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -179,16 +206,16 @@
                                                     <input class="changeable" name="attributes[value][]" type="text" value="<?php echo $attribute->value; ?>" />
                                                 </td>
                                                 <td width="10%">
-                                                    <button type="button" class="btn btn-danger remove-attribute">
-                                                        <i class="fa fa-close"></i>
-                                                    </button>
-                                                </td>
-                                                <td width="10%">
                                                     <label class="custom-control custom-checkbox ml-4 mt-1">
                                                         <input name="attributes[is_variation][]" class="scapegoat-checkbox" type="hidden" value="off" />
                                                         <input name="attributes[is_variation][]" type="checkbox" class="attributes-checkbox custom-control-input" <?php if (Format::get('is_variation', $attribute)) { echo 'checked'; } ?>>
                                                         <span class="custom-control-indicator"></span>
                                                     </label>
+                                                </td>
+                                                <td width="10%">
+                                                    <button type="button" class="btn btn-danger remove-attribute">
+                                                        <i class="fa fa-close"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -212,6 +239,7 @@
                                             <th>Price</th>
                                             <th>Special Price</th>
                                             <th>Advertised</th>
+                                            <th>Final Price</th>
                                             <th>Image</th>
                                             <th>Actions</th>
                                         </tr>
@@ -229,11 +257,14 @@
                                                     <td width="10%" class="align-middle">
                                                         $<input name="variations[price][]" type="text" value="<?php echo $variation->price; ?>" readonly />
                                                     </td>
-                                                    <td width="15%" class="align-middle">
+                                                    <td width="12%" class="align-middle">
                                                         $<input name="variations[special_price][]" type="text" value="<?php echo $variation->special_price; ?>" readonly />
                                                     </td>
-                                                    <td width="15%" class="align-middle">
+                                                    <td width="10%" class="align-middle">
                                                         $<input class="non-empty changeable" name="variations[advertised][]" type="text" value="<?php echo (float)Format::get('advertised', $variation) ?>" />
+                                                    </td>
+                                                    <td width="10%" class="align-middle">
+                                                        $<input class="non-empty changeable" name="variations[final_price][]" type="text" value="<?php echo (float)Format::get('final_price', $variation) ?>" />
                                                     </td>
                                                     <td width="10%" class="align-middle">
                                                         <img src="<?php echo $variation->image; ?>" width="50" />
@@ -255,24 +286,11 @@
                             </div>
                             <div class="card-block tab-pane" id="tab-images">
                                 <div class="row">
-                                    <?php $mainImages = Format::getLatest('gallery_images', $original, $modified); ?>
-                                    <?php foreach ($mainImages as $image): ?>
+                                    <?php $images = Format::getLatest('images', $original, $modified); ?>
+                                    <?php foreach ($images as $image): ?>
                                         <div class="image-container">
                                             <img src="<?php echo $image; ?>" />
-                                            <input name="gallery_images[]" type="hidden" value="<?php echo $image; ?>" />
-                                            <button type="button" class="btn btn-primary remove-image">
-                                                <i class="fa fa-close"></i>
-                                            </button>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                                <hr />
-                                <div class="row">
-                                    <?php $descriptionImages = Format::getLatest('description_images', $original, $modified); ?>
-                                    <?php foreach ($descriptionImages as $image): ?>
-                                        <div class="image-container">
-                                            <img src="<?php echo $image; ?>" />
-                                            <input name="description_images[]" type="hidden" value="<?php echo $image; ?>" />
+                                            <input name="images[]" type="hidden" value="<?php echo $image; ?>" />
                                             <button type="button" class="btn btn-primary remove-image">
                                                 <i class="fa fa-close"></i>
                                             </button>

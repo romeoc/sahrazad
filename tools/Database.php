@@ -148,7 +148,43 @@ class Database
      */
     public function save($data)
     {
+        /* Prices */
+        $data['price_low'] = preg_replace("/[^0-9\.]/", "", $data['price_low']);
+        $data['special_price_low'] = preg_replace("/[^0-9\.]/", "", $data['special_price_low']);
+
+        /* Attributes */
+        $attributes = array();
+        foreach ($data['attributes']['title'] as $key => $title) {
+            $attributes[] = array(
+                'title' => $title,
+                'value' => $data['attributes']['value'][$key],
+                'is_variation' => ($data['attributes']['is_variation'][$key] === 'on')
+            );
+        }
+
+        $data['attributes'] = $attributes;
+
+        /* Variations */
+        if (!empty($data['variations'])) {
+            $variations = array();
+            foreach ($data['variations']['name'] as $key => $name) {
+                $variations[] = array(
+                    'name' => $name,
+                    'available_quantity' => $data['variations']['available_quantity'][$key],
+                    'price' => $data['variations']['price'][$key],
+                    'special_price' => $data['variations']['special_price'][$key],
+                    'advertised' => $data['variations']['advertised'][$key],
+                    'final_price' => $data['variations']['final_price'][$key],
+                    'image' => $data['variations']['image'][$key]
+                );
+            }
+
+            $data['variations'] = $variations;
+        }
+        
+        $data['short_description'] = str_replace('"', '\"', $data['short_description']);
         $data['description'] = str_replace('"', '\"', $data['description']);
+        
         $productId = $data['product_id'];
         $dataJson = str_replace("'", "\'", json_encode($data));
         
@@ -156,6 +192,41 @@ class Database
         $this->query($query);
 
         $errors = $this->getLastError();
+        if ($errors) {
+            die($errors);
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * Set external product id
+     * 
+     * @param int $internalId
+     * @param int $externalId
+     * @return $this
+     */
+    public function link($internalId, $externalId)
+    {
+        $query = "UPDATE products SET external_id = {$externalId} WHERE id = {$internalId}";
+        $this->query($query);
+        
+        return $this;
+    }
+    
+    /**
+     * Mark product as imported
+     * 
+     * @param int $productId
+     * @return $this
+     */
+    public function complete($productId)
+    {
+        $query = "UPDATE products SET is_imported = 1, imported_at = NOW() WHERE id = {$productId}";
+        
+        $this->query($query);
+        $errors = $this->getLastError();
+        
         if ($errors) {
             die($errors);
         }
@@ -190,6 +261,105 @@ class Database
         }
         
         return $this;
+    }
+    
+    /**
+     * Prepare data for API call
+     * 
+     * @param array $data
+     * @return array
+     */
+    public function prepare($data)
+    {
+        $response = array('name' => $data['title']);
+        
+        if (!empty($data['short_description'])) {
+            $response['short_description'] = $data['short_description'];
+        }
+        
+        if (!empty($data['description'])) {
+            $response['description'] = $data['description'];
+        }
+        
+        if (!empty($data['categories'])) {
+            $categories = array();
+            foreach ($data['categories'] as $categoryId) {
+                $categories[] = array('id' => $categoryId);
+            }
+            
+            $response['categories'] = $categories;
+        }
+        
+        $images = array(); $position = 0;
+        foreach ($data['images'] as $image) {
+            $images[] = array(
+                'src' => $image,
+                'position' => $position++
+            );
+        }
+        $response['images'] = $images;
+
+        
+        $isVariable = (!empty($data['variations']));
+        $response['type'] = ($isVariable) ? 'variable' : 'simple';
+        
+        if (!$isVariable) {
+            $response['regular_price'] = $data['price_low'];
+            if (!empty($data['special_price_low'])) {
+                $response['sale_price'] = $data['special_price_low'];
+            }
+        }
+
+        $attributes = $variationAttributeTitles = array(); $position = 0;
+        foreach ($data['attributes'] as $attribute) {
+            $attributes[] = array(
+                'name' => $attribute['title'],
+                'position' => $position++,
+                'visible' => true,
+                'options' => explode('|', $attribute['value']),
+                'variation' => ($attribute['is_variation'])
+            );
+            
+            if ($attribute['is_variation']) {
+                $variationAttributeTitles[] = $attribute['title'];
+            }
+        }
+        $response['attributes'] = $attributes;
+        
+        if ($isVariable) {
+            $variations = array();
+            foreach ($data['variations'] as $variation) {
+                $newVariation = array(
+                    'regular_price' => $variation['advertised'],
+                    'image' => array(
+                        array(
+                            'src' => $variation['image'],
+                            'position' => 0
+                        )
+                    )
+                );
+                
+                if (!empty($variation['final_price'])) {
+                    $newVariation['sale_price'] = $variation['final_price'];
+                }
+                
+                $attributes = array(); 
+                $attributeValues = explode('|', $variation['name']);
+                foreach ($variationAttributeTitles as $key => $variationAttributeTitle) {
+                    $attributes[] = array(
+                        'name' => $variationAttributeTitle,
+                        'option' => $attributeValues[$key]
+                    );
+                }
+                
+                $newVariation['attributes'] = $attributes;
+                $variations[] = $newVariation;
+            }
+            
+            $response['variations'] = $variations;
+        }
+        
+        return $response;
     }
     
     public function listing()

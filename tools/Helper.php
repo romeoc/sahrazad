@@ -29,11 +29,24 @@ class Helper
         return self::getConfig('base_url');
     }
     
+    /**
+     * Get asset URL
+     * 
+     * @param string $type
+     * @param string $file
+     * @return string
+     */
     public static function getAsset($type, $file) 
     {
         return self::getBaseUrl() . "public/assets/{$type}/{$file}";
     }
     
+    /**
+     * Render template
+     * 
+     * @param string $template
+     * @param string $data
+     */
     public static function render($template, $data)
     {
         ob_start();

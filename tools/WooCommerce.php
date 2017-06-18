@@ -28,9 +28,32 @@ class WooCommerce
         );
     }
     
+    /**
+     * Create product in WooCommerce
+     * 
+     * @param array $data
+     * @return array
+     */
     public function createProduct($data)
     {
         return $this->woocommerce->post('products', $data);
+    }
+    
+    /**
+     * Get all category ids
+     * 
+     * @return array
+     */
+    public function getCategories()
+    {
+        $categories = $this->woocommerce->get('products/categories');
+        $response = array();
+        
+        foreach ($categories as $category) {
+            $response[$category['id']] = $category['name'];
+        }
+        
+        return $response;
     }
 }
 

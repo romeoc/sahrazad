@@ -13,13 +13,14 @@
             Sahrazad.data['woodropship_score'] = $('.card-title').html();
             Sahrazad.data['ships_epacket'] = ($('#j-shipping-company').html() === 'ePacket');
             
+            //Images
             var variationImages = $('.item-sku-image img').map(function() { return this.src.replace('_50x50.jpg', ''); }).get();
-            Sahrazad.data['gallery_images'] = window.runParams.imageBigViewURL.concat(variationImages);
-
-            // Description Images
-            Sahrazad.data['description_images'] = $(".description-content img").map(function() {
+            var images = window.runParams.imageBigViewURL.concat(variationImages);
+            var descriptionImages = $(".description-content img").map(function() {
                 return $(this).attr("src");
             }).get();
+            
+            Sahrazad.data['images'] = images.concat(descriptionImages);
 
             // Variations
             if (Object.keys(window.skuProducts).length > 1) {

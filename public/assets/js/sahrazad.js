@@ -44,6 +44,10 @@ $(function() {
         $('#imagemodal').modal('show');
     });
     
+    // Sortable fields
+    $('#tab-images .row').sortable();
+    $('tbody').sortable();
+    
     // Make sure hover class stays on remove image button hover
     $('.remove-image').on('mouseenter', function() {
         $(this).show().siblings('img').addClass('hover');
@@ -136,7 +140,7 @@ $(function() {
             }
         });
         
-        if ($('#tab-variations tr').size() > 0 && $('#tab-attributes input:checkbox:checked').size() === 0) {
+        if ($('#tab-variations tbody tr').size() > 0 && $('#tab-attributes input:checkbox:checked').size() === 0) {
             postError('You have variations, but <b>no attribute supports variations</b>', e);
             return false;
         }

@@ -3,7 +3,7 @@
 
     "name": "Sahrazad",
     "description": "Import Products from AliExpress to Woocommerce",
-    "version": "0.1",
+    "version": "1.0",
 
     "content_scripts": [
         {
