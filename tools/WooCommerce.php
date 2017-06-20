@@ -8,6 +8,7 @@ use tools\Helper;
 class WooCommerce 
 {
     protected $woocommerce;
+    protected $categoriesFile = 'data/categories.json';
     
     public function __construct()
     {
@@ -46,14 +47,21 @@ class WooCommerce
      */
     public function getCategories()
     {
-        $categories = $this->woocommerce->get('products/categories');
-        $response = array();
+        $filePath = ROOT_DIR . $this->categoriesFile;
         
-        foreach ($categories as $category) {
-            $response[$category['id']] = $category['name'];
+        if (!file_exists($filePath)) {
+            $categories = $this->woocommerce->get('products/categories');
+            $response = array();
+
+            foreach ($categories as $category) {
+                $response[$category['id']] = $category['name'];
+            }
+
+            file_put_contents($filePath, json_encode($response));
         }
         
-        return $response;
+        $response = file_get_contents($filePath);
+        return json_decode($response, true);
     }
 }
 

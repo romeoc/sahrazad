@@ -16,7 +16,7 @@ $processedData = array(
     'original' => json_decode($rawData['original_data']),
     'modified' => json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $rawData['processed_data'])),
     'imported' => $rawData['is_imported'],
-    'created_at' => $rawData['created_at'],
+    'last_status_change' => $rawData['last_status_change'],
     'imported_at' => $rawData['imported_at'],
     'categories' => $woocommerce->getCategories()
 );

@@ -4,8 +4,15 @@ $(function() {
         $(this).addClass('hover');
     }).on('mouseleave', function() {
         $(this).removeClass('hover');
-    }).on('click', function() {
-        window.location.replace($(this).data('action'));
+    }).on('mousedown', function(e) {
+        switch(e.which) {
+            case 1:
+                window.location.href = $(this).data('action');
+                break;
+            case 2:
+                window.open($(this).data('action'), '_blank');
+                break;
+        }
     });
     
     // Remove attribute/variation
@@ -15,7 +22,7 @@ $(function() {
     
     // Add attribute
     $('.view .add-attribute').on('click', function() {
-        var html = '<tr><td width="40%"><input type="text" /></td><td width="20%"><input type="text" /></td><td width="20%"><button type="button" class="btn btn-danger remove-attribute"><i class="fa fa-close"></i></button></td><td width="20%"><label class="custom-control custom-checkbox ml-5 mt-4"><input type="checkbox" class="custom-control-input"><span class="custom-control-indicator"></span></label></td></tr>';
+        var html = '<tr><td width="20%"><input class="changeable" name="attributes[title][]" type="text"/></td><td width="60%"><input class="changeable" name="attributes[value][]" type="text" /></td><td width="10%"><label class="custom-control custom-checkbox ml-4 mt-1"><input name="attributes[is_variation][]" class="scapegoat-checkbox" type="hidden" value="off" /><input name="attributes[is_variation][]" type="checkbox" class="attributes-checkbox custom-control-input"><span class="custom-control-indicator"></span></label></td><td width="10%"><button type="button" class="btn btn-danger remove-attribute"><i class="fa fa-close"></i></button></td></tr>';
         $('#tab-attributes tbody').prepend(html);
         $('.view .remove-attribute').off('click').on('click', function() {
             $(this).closest('tr').remove();
@@ -24,10 +31,25 @@ $(function() {
     
     // Add variation
     $('.view .add-variation').on('click', function() {
-        var html = '<tr><td width="33%"><input type="text"/></td><td width="10%">$<input type="text" value="0" /></td><td width="10%">$<input type="text" value="0" /></td><td width="10%"><img width="50" /></td><td width="10%"><button type="button" class="btn btn-danger remove-attribute"><i class="fa fa-close"></i></button></td></tr>';
+        var html = '<tr><td width="20%" class="align-middle"><input name="variations[name][]" type="text" /></td><td width="10%" class="align-middle"><input name="variations[available_quantity][]" type="text" readonly /></td><td width="10%" class="align-middle">$<input name="variations[price][]" type="text" readonly /></td><td width="12%" class="align-middle">$<input name="variations[special_price][]" type="text" readonly /></td><td width="10%" class="align-middle">$<input class="non-empty changeable" name="variations[advertised][]" type="text" /></td><td width="10%" class="align-middle">$<input class="changeable" name="variations[final_price][]" type="text" /></td><td width="10%" class="align-middle"><img src="" width="50" /><input name="variations[image][]" type="hidden" /></td><td width="15%" class="align-middle"><button type="button" class="btn btn-primary change-variation-image" title="Change Image"><i class="fa fa-refresh"></i></button><button type="button" class="btn btn-danger remove-attribute" title="Remove Variation"><i class="fa fa-close"></i></button></td></tr>';
         $('#tab-variations tbody').prepend(html);
         $('.view .remove-attribute').off('click').on('click', function() {
             $(this).closest('tr').remove();
+        });
+        
+        $('.change-variation-image').off('click').on('click', function() {
+            var targetVariation = $(this);
+            var modal = $('#imagemodal');
+
+            $('#myModalLabel').html('Select Image');
+            $('.modal-body').html($('#tab-images').html()).find('.remove-image').remove();
+            $('.modal-body .image-container').on('click', function() {
+                var imageUrl = $(this).find('img').attr('src');
+                targetVariation.closest('tr').find('img').attr('src', imageUrl).siblings('input').val(imageUrl);
+                modal.modal('hide');
+            });
+
+            modal.modal('show');
         });
     });
     

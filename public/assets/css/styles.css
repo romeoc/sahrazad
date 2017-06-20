@@ -6,6 +6,7 @@ button { cursor: pointer; }
 .card { margin-bottom: 20px; }
 .modal-dialog { max-width: 1200px; }
 
+.listing { width: 1500px; margin-left: -200px; }
 .listing tr { cursor: pointer; }
 .listing .imported-1 { background-color: #94D092; }
 .listing .status-0 { background-color: #FAD4D3; }

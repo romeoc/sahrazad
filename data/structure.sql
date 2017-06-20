@@ -4,6 +4,6 @@ CREATE TABLE products (
     original_data text NOT NULL,
     processed_data text NULL,
     is_imported BIT DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_status_change TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     imported_at TIMESTAMP NULL DEFAULT NULL
 )

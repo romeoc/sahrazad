@@ -1,3 +1,4 @@
+<?php use tools\Format; ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,21 +28,20 @@
                     <thead>
                         <tr>
                             <th>Id</th>
+                            <th>Status</th>
+                            <th>Image</th>
                             <th width="50%">Title</th>
-                            <th>Sold</th>
-                            <th>Advertised</th>
-                            <th>Created At</th>
-                            <th>Staus</th>
+                            <th width="12%">Sold</th>
+                            <th width="12%">Advertised</th>
+                            <th>Margin</th>
+                            <th>Decrease&nbsp;%</th>
+                            <th width="15%">Last Status Change</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach($data as $product): ?>
                             <tr data-action="<?php echo self::getBaseUrl() . "public/view.php?product={$product['id']}"; ?>">
                                 <td><?php echo $product['id']; ?></td>
-                                <td><?php echo $product['title']; ?></td>
-                                <td>$<?php echo $product['seller_price']; ?></td>
-                                <td>$<?php echo ($product['advertised_price']) ?: 0; ?></td>
-                                <td><?php echo $product['created_at']; ?></td>
                                 <td class="align-middle text-center status-<?php echo (int)(bool)$product['advertised_price']; ?> imported-<?php echo $product['imported']; ?>">
                                     <?php if (empty($product['advertised_price'])): ?>
                                         New
@@ -51,6 +51,13 @@
                                         Live
                                     <?php endif; ?>
                                 </td>
+                                <td><img src="<?php echo $product['image']; ?>" width="50" /></td>
+                                <td><?php echo $product['title']; ?></td>
+                                <td>$<?php echo $product['seller_price']; ?></td>
+                                <td>$<?php echo ($product['advertised_price']) ?: 0; ?></td>
+                                <td><?php echo Format::getProfitMargin($product); ?>%</td>
+                                <td><?php echo Format::getPercentDecrease($product); ?>%</td>
+                                <td><?php echo $product['last_status_change']; ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

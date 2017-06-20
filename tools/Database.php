@@ -156,8 +156,8 @@ class Database
         $attributes = array();
         foreach ($data['attributes']['title'] as $key => $title) {
             $attributes[] = array(
-                'title' => $title,
-                'value' => $data['attributes']['value'][$key],
+                'title' => str_replace('"', '\"', $title),
+                'value' => str_replace('"', '\"', $data['attributes']['value'][$key]),
                 'is_variation' => ($data['attributes']['is_variation'][$key] === 'on')
             );
         }
@@ -169,7 +169,7 @@ class Database
             $variations = array();
             foreach ($data['variations']['name'] as $key => $name) {
                 $variations[] = array(
-                    'name' => $name,
+                    'name' => str_replace('"', '\"', $name),
                     'available_quantity' => $data['variations']['available_quantity'][$key],
                     'price' => $data['variations']['price'][$key],
                     'special_price' => $data['variations']['special_price'][$key],
@@ -184,11 +184,13 @@ class Database
         
         $data['short_description'] = str_replace('"', '\"', $data['short_description']);
         $data['description'] = str_replace('"', '\"', $data['description']);
+        $data['short_description'] = str_replace(PHP_EOL, '<br />', $data['short_description']);
+        $data['description'] = str_replace(PHP_EOL, '<br />', $data['description']);
         
         $productId = $data['product_id'];
         $dataJson = str_replace("'", "\'", json_encode($data));
         
-        $query = "UPDATE products SET processed_data = '{$dataJson}' WHERE id = {$productId}";
+        $query = "UPDATE products SET processed_data = '{$dataJson}', last_status_change = NOW() WHERE id = {$productId}";
         $this->query($query);
 
         $errors = $this->getLastError();
@@ -248,7 +250,7 @@ class Database
         $query = '';
 
         if (!empty($entry)) {
-            $query = "UPDATE products SET original_data = '{$dataJson}', created_at = NOW() WHERE id = {$productId}";
+            $query = "UPDATE products SET original_data = '{$dataJson}', last_status_change = NOW() WHERE id = {$productId}";
         } else {
             $query = "INSERT INTO products(id, original_data) VALUES ({$productId}, '{$dataJson}')";
         }
@@ -364,7 +366,7 @@ class Database
     
     public function listing()
     {
-        $query = "SELECT * FROM products ORDER BY created_at DESC";
+        $query = "SELECT * FROM products ORDER BY last_status_change DESC";
         $this->query($query);
         
         return $this->fetchAll();

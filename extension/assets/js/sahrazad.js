@@ -34,11 +34,13 @@
                     variation['price'] = window.skuProducts[product].skuVal.skuCalPrice;
                     variation['price'] = window.skuProducts[product].skuVal.skuCalPrice;
 
-                    var image = $('.item-sku-image [data-sku-id="' + variation['sku'] + '"]').find('img');
-                    if (image.size() > 0) {
-                        variation['name'] = image.attr('title');
-                        variation['image'] = image.attr('src').replace('_50x50.jpg', '');
-                    }
+                    variation['sku'].split(',').forEach(function(sku) {
+                        var image = $('.item-sku-image [data-sku-id="' + sku + '"]').find('img');
+                        if (image.size() > 0) {
+                            variation['name'] = image.attr('title');
+                            variation['image'] = image.attr('src').replace('_50x50.jpg', '');
+                        }
+                    });
 
                     Sahrazad.data['variations'].push(variation);
                 }

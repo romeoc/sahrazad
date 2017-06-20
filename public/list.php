@@ -18,10 +18,11 @@ foreach ($rawData as $product) {
         'id' => $product[0],
         'external_id' => $product[1],
         'title' => Format::getLatest('title', $originalData, $modifiedData),
+        'image' => reset(Format::getLatest('images', $originalData, $modifiedData)),
         'seller_price' => Format::getFinalPrice($originalData),
         'advertised_price' => Format::getFinalPrice($modifiedData),
         'imported' => $product[4],
-        'created_at' => $product[5],
+        'last_status_change' => $product[5],
         'imported_at' => $product[6]
     );
 }

@@ -56,7 +56,7 @@ class Format
             return null;
         }
         
-        return property_exists($data, $key);
+        return property_exists($data, $key) && !empty($data->$key);
     }
     
     public static function getLatest($key, $old, $new)
@@ -88,5 +88,28 @@ class Format
         } else {
             return $class . 'success';
         }
+    }
+    
+    /**
+     * Get profit margin
+     * 
+     * @param array $product
+     */
+    public function getProfitMargin($product)
+    {
+        if (empty($product['advertised_price'])) {
+            return 0;
+        }
+        
+        return number_format($product['advertised_price']/$product['seller_price']*100, 2);
+    }
+    
+    public function getPercentDecrease($product)
+    {
+        if (empty($product['advertised_price'])) {
+            return 0;
+        }
+        
+        return number_format(($product['advertised_price'] - $product['seller_price'])/$product['advertised_price']*100, 2);
     }
 }

@@ -128,21 +128,19 @@
                                                 <textarea name="title" class="form-control" id="modif-title" rows="3"><?php echo Format::getLatest('title', $original, $modified); ?></textarea>
                                             </div>
                                         </div>
-                                        <?php if ($original->price_low == $original->price_high): ?>
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label for="modif-price">Price</label>
+                                                <input name="price_low" type="text" class="form-control" id="modif-price" value="$<?php echo number_format(Format::getLatest('price_low', $original, $modified), 2); ?>" />
+                                            </div>
+                                        </div>
+                                        <?php if (Format::has('special_price_low', $original)): ?>
                                             <div class="row">
                                                 <div class="form-group col-md-6">
-                                                    <label for="modif-price">Price</label>
-                                                    <input name="price_low" type="text" class="form-control" id="modif-price" value="$<?php echo number_format(Format::getLatest('price_low', $original, $modified), 2); ?>" />
+                                                    <label for="modif-special-price">Special Price</label>
+                                                    <input name="special_price_low" type="text" class="form-control" id="modif-special-price" value="$<?php echo number_format(Format::getLatest('special_price_low', $original, $modified), 2); ?>" />
                                                 </div>
                                             </div>
-                                            <?php if (Format::has('special_price_low', $original)): ?>
-                                                <div class="row">
-                                                    <div class="form-group col-md-6">
-                                                        <label for="modif-special-price">Special Price</label>
-                                                        <input name="special_price_low" type="text" class="form-control" id="modif-special-price" value="$<?php echo number_format(Format::getLatest('special_price_low', $original, $modified), 2); ?>" />
-                                                    </div>
-                                                </div>
-                                            <?php endif; ?>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -153,7 +151,7 @@
                                         <?php $selectedCategories = Format::get('categories', $modified); ?>
                                         <?php $selectedCategories = ($selectedCategories) ?: array(); ?>
                                         <label for="categories">Categories</label>
-                                        <select name="categories[]" multiple class="form-control" id="categories">
+                                        <select name="categories[]" multiple class="form-control" id="categories" size="<?php echo count($data['categories']); ?>">
                                             <?php foreach($data['categories'] as $categoryId => $categoryName): ?>
                                                 <option value="<?php echo $categoryId; ?>" <?php if (in_array($categoryId, $selectedCategories)) { echo 'selected'; } ?>>
                                                     <?php echo $categoryName; ?>
@@ -165,7 +163,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-12">
                                         <label class="modified-description" for="modif-description-short">Short Description</label>
-                                        <textarea name="short_description" class="form-control" id="modif-description-short" rows="5"><?php echo Format::get('short_description', $modified); ?></textarea>
+                                        <textarea name="short_description" class="form-control" id="modif-description-short" rows="5"><?php echo str_replace('<br />', PHP_EOL, Format::get('short_description', $modified)); ?></textarea>
                                     </div>
                                 </div>                                        
                                 <div class="row">
@@ -174,7 +172,7 @@
                                             Description
                                             <button type="button" class="btn btn-primary float-right add-images-to-description">Add Images</button>
                                         </label>
-                                        <textarea name="description" class="form-control" id="modif-description" rows="8"><?php echo Format::get('description', $modified); ?></textarea>
+                                        <textarea name="description" class="form-control" id="modif-description" rows="8"><?php echo str_replace('<br />', PHP_EOL, Format::get('description', $modified)); ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -200,10 +198,10 @@
                                         <?php foreach ($attributes as $attribute): ?>
                                             <tr>
                                                 <td width="20%">
-                                                    <input class="changeable" name="attributes[title][]" type="text" value="<?php echo $attribute->title; ?>" />
+                                                    <input class="changeable" name="attributes[title][]" type="text" value="<?php echo htmlspecialchars($attribute->title); ?>" />
                                                 </td>
                                                 <td width="60%">
-                                                    <input class="changeable" name="attributes[value][]" type="text" value="<?php echo $attribute->value; ?>" />
+                                                    <input class="changeable" name="attributes[value][]" type="text" value="<?php echo htmlspecialchars($attribute->value); ?>" />
                                                 </td>
                                                 <td width="10%">
                                                     <label class="custom-control custom-checkbox ml-4 mt-1">
@@ -249,7 +247,7 @@
                                             <?php foreach ($variations as $variation): ?>
                                                 <tr>
                                                     <td width="20%" class="align-middle">
-                                                        <input name="variations[name][]" type="text" value="<?php echo $variation->name; ?>" />
+                                                        <input name="variations[name][]" type="text" value="<?php echo Format::get('name', $variation); ?>" />
                                                     </td>
                                                     <td width="10%" class="align-middle">
                                                         <input name="variations[available_quantity][]" type="text" value="<?php echo $variation->available_quantity; ?>" readonly />
@@ -258,17 +256,17 @@
                                                         $<input name="variations[price][]" type="text" value="<?php echo $variation->price; ?>" readonly />
                                                     </td>
                                                     <td width="12%" class="align-middle">
-                                                        $<input name="variations[special_price][]" type="text" value="<?php echo $variation->special_price; ?>" readonly />
+                                                        $<input name="variations[special_price][]" type="text" value="<?php echo (float) Format::get('special_price', $variation); ?>" readonly />
                                                     </td>
                                                     <td width="10%" class="align-middle">
                                                         $<input class="non-empty changeable" name="variations[advertised][]" type="text" value="<?php echo (float)Format::get('advertised', $variation) ?>" />
                                                     </td>
                                                     <td width="10%" class="align-middle">
-                                                        $<input class="non-empty changeable" name="variations[final_price][]" type="text" value="<?php echo (float)Format::get('final_price', $variation) ?>" />
+                                                        $<input class="changeable" name="variations[final_price][]" type="text" value="<?php echo (float)Format::get('final_price', $variation) ?>" />
                                                     </td>
                                                     <td width="10%" class="align-middle">
-                                                        <img src="<?php echo $variation->image; ?>" width="50" />
-                                                        <input name="variations[image][]" type="hidden" value="<?php echo $variation->image; ?>" />
+                                                        <img src="<?php echo Format::get('image', $variation); ?>" width="50" />
+                                                        <input name="variations[image][]" type="hidden" value="<?php echo Format::get('image', $variation); ?>" />
                                                     </td>
                                                     <td width="15%" class="align-middle">
                                                         <button type="button" class="btn btn-primary change-variation-image" title="Change Image">
