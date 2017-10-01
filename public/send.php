@@ -19,4 +19,4 @@ $result = $woocommerce->createProduct($data);
 $database->complete($productId);
 $database->link($productId, $result['id']);
 
-header('Location: ' . Helper::getBaseUrl() . "public/view.php?product={$productId}");
+header('Location: ' . Helper::getBaseUrl() . "public/list.php");

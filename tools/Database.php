@@ -224,7 +224,7 @@ class Database
      */
     public function complete($productId)
     {
-        $query = "UPDATE products SET is_imported = 1, imported_at = NOW() WHERE id = {$productId}";
+        $query = "UPDATE products SET is_imported = 1, last_status_change = NOW(), imported_at = NOW() WHERE id = {$productId}";
         
         $this->query($query);
         $errors = $this->getLastError();

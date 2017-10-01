@@ -14,7 +14,8 @@ class WooCommerce
     {
         $options = array(
             'wp_api' => true,
-            'version' => 'wc/v1'
+            'version' => 'wc/v1',
+            'timeout' => 500
         );
         
         if (Helper::getConfig('woocommerce/developer_mode')) {
